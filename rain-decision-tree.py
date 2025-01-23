@@ -160,6 +160,15 @@ we see max depth value of 7, the validation error agaain start increasing. so th
 model_max = DecisionTreeClassifier(max_depth=7, random_state=42).fit(X_train, train_target)
 model_max.score(X_val, val_target) # 84.5
 
+#hyperparameter tuning using max_leaf_nodes
+model_leaf = DecisionTreeClassifier(max_leaf_nodes=128, random_state=42)
+model_leaf.fit(X_train, train_target)
+leaf_train_score = model_leaf.score(X_train, train_target)
+leaf_val_score = model_leaf.score(X_val, val_target)
+print(leaf_train_score, leaf_val_score) # 84.8, 84.4
+# We can similarly find the ideal max_leaf_nodes just like we did for max_depth
+
+
 
 
 
