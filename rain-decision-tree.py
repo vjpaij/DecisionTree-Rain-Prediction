@@ -168,6 +168,32 @@ leaf_val_score = model_leaf.score(X_val, val_target)
 print(leaf_train_score, leaf_val_score) # 84.8, 84.4
 # We can similarly find the ideal max_leaf_nodes just like we did for max_depth
 
+#More effective strategy is to combine results of several decision trees trained with slightly different parameters. This is
+#called Random Forest
+from sklearn.ensemble import RandomForestClassifier
+#n-jobs allows random forest to use multiple parallel workers to train decision trees 
+model_rf = RandomForestClassifier(n_jobs=-1, random_state=42)
+model_rf.fit(X_train, train_target)
+rf_train_score = model_rf.score(X_train, train_target)
+rf_val_score = model_rf.score(X_val, val_target)
+print(rf_train_score, rf_val_score) # 100, 85.7
+rf_train_probs = model_rf.predict_proba(X_train)
+print(rf_train_probs)
+#we can access individual decision trees using estimators_
+print(len(model_rf.estimators_)) #100 (by default but configurable)
+model_rf.estimators_[0]
+#random forest also assign importance to each feature by combining importance values from individual decision trees
+rf_importance_df = pd.DataFrame({
+    'feature': X_train.columns,
+    'importance': model_rf.feature_importances_}).sort_values('importance', ascending=False)
+rf_importance_df.head(10)
+sns.barplot(data=rf_importance_df.head(10), x='importance', y='feature')
+plt.show()
+'''
+we can notice distribution is lot less skewed than single decision tree
+'''
+
+
 
 
 
