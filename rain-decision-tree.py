@@ -7,6 +7,11 @@ import plotly.express as px
 
 sns.set_style('darkgrid')
 matplotlib.rcParams['font.size'] = 14
+plt.rcParams['text.color'] = 'white'  # Default text color
+plt.rcParams['axes.labelcolor'] = 'white'  # Axis labels
+plt.rcParams['xtick.color'] = 'white'  # X-axis tick labels
+plt.rcParams['ytick.color'] = 'white'  # Y-axis tick labels
+plt.rcParams['axes.titlecolor'] = 'white'  # Axis title
 matplotlib.rcParams['figure.figsize'] = (10, 6)
 matplotlib.rcParams['figure.facecolor'] = '#00000000'
 
@@ -79,5 +84,49 @@ X_train = train_inputs[numeric_cols + encoder_cols]
 X_val = val_inputs[numeric_cols + encoder_cols]
 X_test = test_inputs[numeric_cols + encoder_cols]
 '''
+
+#Training the Decision Tree Model
+from sklearn.tree import DecisionTreeClassifier
+model  = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, train_target)
+
+#Evaluating the Model
+from sklearn.metrics import accuracy_score, confusion_matrix
+train_preds = model.predict(X_train)
+print(train_preds)
+train_score = accuracy_score(train_preds, train_target)
+print(train_score)
+train_probs = model.predict_proba(X_train)
+print(train_probs)
+
+#Evaluating the model now on the validation set
+#We can prediction and compute accuracy in one step by using the function 'score'
+val_score = model.score(X_val, val_target)
+print(val_score)
+'''
+We can see the accuracy score for train dataset was 100% but for validation dataset it is 79.3%. This is a clear indication of 
+overfitting.
+'''
+
+#Visualizing the Decision Tree
+from sklearn.tree import plot_tree, export_text
+plt.figure(figsize=(20, 10))
+plot_tree(model, feature_names=X_train.columns, max_depth=2, filled=True)
+plt.show()
+print(model.tree_.max_depth)
+#Similar tree can be seen as text using export_text
+tree_text = export_text(model, max_depth=10, feature_names=list(X_train.columns))
+print(tree_text[0:5000])
+#Based on gini va;ue, mode assigns an 'importance' value to each feature
+importance_df = pd.DataFrame({
+    'feature' : X_train.columns,
+    'importance' : model.feature_importances_
+}).sort_values('importance', ascending=False)
+print(importance_df)
+sns.barplot(data=importance_df.head(10), x='importance', y='feature')
+plt.show()    
+
+
+
 
 
