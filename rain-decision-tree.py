@@ -41,3 +41,12 @@ print(numeric_cols)
 categorical_cols = train_inputs.select_dtypes('object').columns.tolist()
 print(categorical_cols)
 
+#Imputing Numeric Null values
+train_inputs[numeric_cols].isna().sum().sort_values(ascending=False)
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy='mean').fit(data[numeric_cols])
+
+train_inputs[numeric_cols] = imputer.transform(train_inputs[numeric_cols])
+val_inputs[numeric_cols] = imputer.transform(val_inputs[numeric_cols])
+test_inputs[numeric_cols] = imputer.transform(test_inputs[numeric_cols])
+
