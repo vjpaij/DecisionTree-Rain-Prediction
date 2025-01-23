@@ -50,3 +50,13 @@ train_inputs[numeric_cols] = imputer.transform(train_inputs[numeric_cols])
 val_inputs[numeric_cols] = imputer.transform(val_inputs[numeric_cols])
 test_inputs[numeric_cols] = imputer.transform(test_inputs[numeric_cols])
 
+#Scaling numeric Features
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler().fit(data[numeric_cols])
+
+train_inputs[numeric_cols] = scaler.transform(train_inputs[numeric_cols])
+val_inputs[numeric_cols] = scaler.transform(val_inputs[numeric_cols])
+test_inputs[numeric_cols] = scaler.transform(test_inputs[numeric_cols])
+
+print(train_inputs.describe().loc[['min', 'max']])
+
