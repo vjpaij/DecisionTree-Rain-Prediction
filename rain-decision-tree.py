@@ -80,6 +80,7 @@ X_val = val_inputs.drop(columns=categorical_cols)
 X_test = test_inputs.drop(columns=categorical_cols)
 print(X_train.columns.tolist())
 '''
+same as:
 X_train = train_inputs[numeric_cols + encoder_cols]
 X_val = val_inputs[numeric_cols + encoder_cols]
 X_test = test_inputs[numeric_cols + encoder_cols]
@@ -110,9 +111,9 @@ overfitting.
 
 #Visualizing the Decision Tree
 from sklearn.tree import plot_tree, export_text
-# plt.figure(figsize=(20, 10))
-# plot_tree(model, feature_names=X_train.columns, max_depth=2, filled=True)
-# plt.show()
+plt.figure(figsize=(20, 10))
+plot_tree(model, feature_names=X_train.columns, max_depth=2, filled=True)
+plt.show()
 print(model.tree_.max_depth)
 #Similar tree can be seen as text using export_text
 tree_text = export_text(model, max_depth=10, feature_names=list(X_train.columns))
@@ -123,8 +124,8 @@ importance_df = pd.DataFrame({
     'importance' : model.feature_importances_
 }).sort_values('importance', ascending=False)
 print(importance_df)
-# sns.barplot(data=importance_df.head(10), x='importance', y='feature')
-# plt.show()  
+sns.barplot(data=importance_df.head(10), x='importance', y='feature')
+plt.show()  
 
 #Using hyperparameters to tune the model
 #max_depth
@@ -222,6 +223,14 @@ test_params(max_leaf_nodes=2**7)
 test_params(max_leaf_nodes=2**5, max_depth=15, n_estimators=600)
 #verify the accuracy with the base accuracy
 '''
+#max_features -> instead of using all the features (119 columns in this example), we can use a subset of features
+#max_features can have value of "auto", "sqrt", "log2" or a int/float between 0 and 1. Default is auto which is sqrt
+'''
+test_params(max_features='log2')
+test_params(max_features=6)
+there are many more hyperparameters that can be tuned. 
+'''
+
 
 
 
