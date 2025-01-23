@@ -110,9 +110,9 @@ overfitting.
 
 #Visualizing the Decision Tree
 from sklearn.tree import plot_tree, export_text
-plt.figure(figsize=(20, 10))
-plot_tree(model, feature_names=X_train.columns, max_depth=2, filled=True)
-plt.show()
+# plt.figure(figsize=(20, 10))
+# plot_tree(model, feature_names=X_train.columns, max_depth=2, filled=True)
+# plt.show()
 print(model.tree_.max_depth)
 #Similar tree can be seen as text using export_text
 tree_text = export_text(model, max_depth=10, feature_names=list(X_train.columns))
@@ -123,8 +123,44 @@ importance_df = pd.DataFrame({
     'importance' : model.feature_importances_
 }).sort_values('importance', ascending=False)
 print(importance_df)
-sns.barplot(data=importance_df.head(10), x='importance', y='feature')
-plt.show()    
+# sns.barplot(data=importance_df.head(10), x='importance', y='feature')
+# plt.show()  
+
+#Using hyperparameters to tune the model
+#max_depth
+model_max = DecisionTreeClassifier(max_depth=5, random_state=42)
+model_max.fit(X_train, train_target)
+max_train_score = model_max.score(X_train, train_target)
+max_val_score = model_max.score(X_val, val_target)
+print(max_train_score, max_val_score)
+'''
+we see accuracy score of 83.9 and 84.1 respectively
+'''
+#Determining the best value for max_depth
+def max_depth_error(md):
+    model_max = DecisionTreeClassifier(max_depth=md, random_state=42)
+    model_max.fit(X_train, train_target)
+    train_acc = 1 - model_max.score(X_train, train_target)
+    val_acc = 1 - model_max.score(X_val, val_target)
+    return {'Max Depth': md, 'Training Error': train_acc, 'Validation Error': val_acc}
+
+errors_df = pd.DataFrame([max_depth_error(md) for md in range(1, 21)])
+plt.figure()
+plt.plot(errors_df['Max Depth'], errors_df['Training Error'], label='Training Error')
+plt.plot(errors_df['Max Depth'], errors_df['Validation Error'], label='Validation Error')
+plt.title('Training vs. Validation Error')
+plt.xlabel('Max Depth')
+plt.ylabel('Error (1 - Accuracy)')
+plt.legend(['Training', 'Validation'])
+plt.xticks(range(0, 21, 2))
+plt.show()
+'''
+we see max depth value of 7, the validation error agaain start increasing. so the ideal max depth value is 7.
+'''
+model_max = DecisionTreeClassifier(max_depth=7, random_state=42).fit(X_train, train_target)
+model_max.score(X_val, val_target) # 84.5
+
+
 
 
 
