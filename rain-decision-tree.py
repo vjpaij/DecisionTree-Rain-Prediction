@@ -193,6 +193,40 @@ plt.show()
 we can notice distribution is lot less skewed than single decision tree
 '''
 
+#Random Forest Hyperparameter tuning
+'''
+from the basic setup of Random Forest model above, let us set the accuracy obtained as our benchmark
+rf_train_score = 100
+rf_val_score = 85.7
+'''
+#n_estimators -> default is 100
+'''
+model_rf = RandomForestClassifier(n_jobs=-1, random_state=42, n_estimators=200)
+keep checking the score by doubling the value until the change in accuracy is negligible
+we can also draw a graph between training error and validator error and arrive at the right value
+'''
+#max_depth and max_leaf_nodes
+'''
+Similar to decision tree model. the value set would be applicable for all decision trees in the forest
+'''
+#Let us build a helper function to make hyperparamter testing a little simple
+def test_params(**params):
+    model = RandomForestClassifier(random_state=42, n_jobs=-1, **params).fit(X_train, train_target)
+    train_score = model.score(X_train, train_target)
+    val_score = model.score(X_val, val_target)
+    return train_score, val_score
+'''
+test_params(max_depth=5)
+test_params(max_depth=26)
+test_params(max_leaf_nodes=2**7)
+test_params(max_leaf_nodes=2**5, max_depth=15, n_estimators=600)
+#verify the accuracy with the base accuracy
+'''
+
+
+
+
+
 
 
 
