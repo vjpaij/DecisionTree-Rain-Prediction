@@ -60,3 +60,24 @@ test_inputs[numeric_cols] = scaler.transform(test_inputs[numeric_cols])
 
 print(train_inputs.describe().loc[['min', 'max']])
 
+#Encoding Categorical Columns
+from sklearn.preprocessing import OneHotEncoder
+encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore').fit(data[categorical_cols])
+encoded_cols = list(encoder.get_feature_names_out(categorical_cols))
+
+train_inputs[encoded_cols] = encoder.transform(train_inputs[categorical_cols])
+val_inputs[encoded_cols] = encoder.transform(val_inputs[categorical_cols])
+test_inputs[encoded_cols] = encoder.transform(test_inputs[categorical_cols])
+
+#Drop the original Categorical columns so that we are left with only numeric fields
+X_train = train_inputs.drop(columns=categorical_cols)
+X_val = val_inputs.drop(columns=categorical_cols)
+X_test = test_inputs.drop(columns=categorical_cols)
+print(X_train.columns.tolist())
+'''
+X_train = train_inputs[numeric_cols + encoder_cols]
+X_val = val_inputs[numeric_cols + encoder_cols]
+X_test = test_inputs[numeric_cols + encoder_cols]
+'''
+
+
